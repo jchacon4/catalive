@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>hola van a reprobar</title>
+  <script type="text/javascript" src="dist/jeelizFaceFilter.js"></script>
+  <style media="screen">
+    *{margin: 0; padding: 0;}
+    html,body{width: 100%; height: 100%;}
+    #jeeFaceFilterCanvas{z-index: 0; position: absolute; top: 0; left: 0;}
+    #myVideo{width:100%; height:100%; z-index: 2; position: absolute; top: 0; left: 0; opacity: 0; transition: 0.5s;}
+  </style>
+</head>
+<body>
+  <canvas width="600" height="600" id='jeeFaceFilterCanvas'></canvas>
+  <video id="myVideo">
+    <source src="gato.mp4" type="video/mp4">
+      </video>
+    </body>
+
+
+    <script type="text/javascript">
+    var cara = false;
+    JEEFACEFILTERAPI.init({
+      canvasId: 'jeeFaceFilterCanvas',
+      NNCpath: 'dist/', //path to JSON neural network model (NNC.json by default)
+      callbackReady: function(errCode, spec){
+        if (errCode){
+          console.log('AN ERROR HAPPENS. ERROR CODE =', errCode);
+          return;
+        }
+        console.log('INFO: JEEFACEFILTERAPI IS READY');
+      }, //end callbackReady()
+
+      //called at each render iteration (drawing loop)
+      callbackTrack: function(detectState){
+        var vid = document.getElementById("myVideo");
+        //render your scene here
+        if (detectState['detected'] >= 0.8){
+          cara = true;
+          vid.play();
+          vid.style.opacity = "1.0";
+          console.log("hay alguien aqui")
+
+        }else if (cara == true){
+          vid.pause();
+          vid.load();
+          vid.style.opacity = "0";
+          cara = false;
+        }else if (cara == false){
+          vid.pause();
+          vid.style.opacity = "0";
+        }
+      } //end callbackTrack()
+    });//end init call
+    </script>
+    </html>
